@@ -1,3 +1,6 @@
+let userScore = 0
+let cpuScore = 0
+
 function getComputerChoice() {
 	let randomNumber = Math.floor(Math.random() * 3)
 	return randomNumber == 0 ? 'Rock'
@@ -49,9 +52,14 @@ function playGame() {
 		let computerSelection = getComputerChoice();
 		let result = playRound(playerSelection, computerSelection);
 
-		result == 0 ? ( i-- && alert('Choose a valid option')) 
+		result == 0 ? (i-- && alert('Choose a valid option'))
 			: console.log(result);
 	}
+	console.log('Your score = ' + userScore)
+	console.log('Computer score = ' + cpuScore)
+	userScore > cpuScore ? console.log('You won the game!')
+		: userScore < cpuScore ? console.log('You lose the game')
+			: console.log('The game ended in tie')
 }
 
 function capitalize(s) {
@@ -59,9 +67,13 @@ function capitalize(s) {
 }
 
 function msgLose(playerSelection, computerSelection) {
+	cpuScore++
 	return `You Lose! ${computerSelection} beast ${playerSelection}`;
 }
 
 function msgWin(playerSelection, computerSelection) {
+	userScore++
 	return `You Win! ${playerSelection} beast ${computerSelection}`;
 }
+
+playGame()
