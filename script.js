@@ -1,5 +1,12 @@
-let userScore = 0
+let playerScore = 0
 let cpuScore = 0
+let counter = 0
+const rockButton = document.querySelector('#rock')
+const paperButton = document.querySelector('#paper')
+const scissorsButton = document.querySelector('#scissors')
+const resultList = document.querySelector('#resultList')
+const playerCounter = document.querySelector('#player')
+const cpuCounter = document.querySelector('#cpu')
 
 function getComputerChoice() {
 	let randomNumber = Math.floor(Math.random() * 3)
@@ -7,6 +14,44 @@ function getComputerChoice() {
 		: randomNumber == 1 ? 'Paper'
 			: 'Scissors';
 }
+
+function resetGame() {
+	playerScore = 0;
+	cpuScore = 0;
+	resultList.replaceChildren();
+}
+
+function updateScore(){
+	cpuCounter.textContent = cpuScore;
+	playerCounter.textContent = playerScore;
+}
+
+function ResultGameMsg(msg) {
+	const item = document.createElement('li')
+	const h2 = document.createElement('h2')
+	item.appendChild(h2)
+	h2.textContent = msg
+	resultList.replaceChildren(item)
+}
+
+function getPlayerChoiceAndPlay() {
+	counter ? 0 : resetGame();
+	let playerChoice = this.id;
+	let computerChoice = getComputerChoice();
+	playRound(playerChoice, computerChoice);
+	counter++
+	updateScore()
+	if (counter == 5) {
+		playerScore > cpuScore ? ResultGameMsg('You won the game!')
+			: playerScore < cpuScore ? ResultGameMsg('You lost the game')
+				: ResultGameMsg('The game ended in tie');
+		counter = 0;
+	}
+}
+
+rockButton.addEventListener('click', getPlayerChoiceAndPlay);
+paperButton.addEventListener('click', getPlayerChoiceAndPlay);
+scissorsButton.addEventListener('click', getPlayerChoiceAndPlay);
 
 function playRound(playerSelection, computerSelection) {
 	let capPlayerSelection = capitalize(playerSelection)
@@ -21,7 +66,7 @@ function playRound(playerSelection, computerSelection) {
 		} else if (computerSelection == 'Scissors') {
 			return msgWin(capPlayerSelection, computerSelection);
 		} else {
-			return 'Tie!'
+			return msgTie()
 		}
 	}
 
@@ -31,7 +76,7 @@ function playRound(playerSelection, computerSelection) {
 		} else if (computerSelection == 'Rock') {
 			return msgWin(capPlayerSelection, computerSelection);
 		} else {
-			return 'Tie!';
+			return msgTie();
 		}
 	}
 
@@ -41,25 +86,9 @@ function playRound(playerSelection, computerSelection) {
 		} else if (computerSelection == 'Paper') {
 			return msgWin(capPlayerSelection, computerSelection);
 		} else {
-			return 'Tie!';
+			return msgTie();
 		}
 	}
-}
-
-function playGame() {
-	for (let i = 0; i < 5; i++) {
-		let playerSelection = prompt('Choice Rock, Paper or Scissors');
-		let computerSelection = getComputerChoice();
-		let result = playRound(playerSelection, computerSelection);
-
-		result == 0 ? (i-- && alert('Choose a valid option'))
-			: console.log(result);
-	}
-	console.log('Your score = ' + userScore)
-	console.log('Computer score = ' + cpuScore)
-	userScore > cpuScore ? console.log('You won the game!')
-		: userScore < cpuScore ? console.log('You lose the game')
-			: console.log('The game ended in tie')
 }
 
 function capitalize(s) {
@@ -68,12 +97,20 @@ function capitalize(s) {
 
 function msgLose(playerSelection, computerSelection) {
 	cpuScore++
-	return `You Lose! ${computerSelection} beast ${playerSelection}`;
+	const result = document.createElement('li');
+	result.textContent = `You Lose! ${computerSelection} beast ${playerSelection}`;
+	resultList.appendChild(result);
 }
 
 function msgWin(playerSelection, computerSelection) {
-	userScore++
-	return `You Win! ${playerSelection} beast ${computerSelection}`;
+	playerScore++
+	const result = document.createElement('li');
+	result.textContent = `You Win! ${playerSelection} beast ${computerSelection}`
+	resultList.appendChild(result)
 }
 
-playGame()
+function msgTie() {
+	const result = document.createElement('li');
+	result.textContent = 'Tie!'
+	resultList.appendChild(result)
+}
